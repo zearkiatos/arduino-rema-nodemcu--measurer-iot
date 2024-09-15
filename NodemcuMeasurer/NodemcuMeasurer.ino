@@ -440,7 +440,7 @@ void configureMQTT() {
  * si ya es tiempo, mide y envía las mediciones.
  */
 void measure() {
-  if ((millis() - measureTime) >= MEASURE_INTERVAL * 1000 ) {
+  if ((millis() - measureTime)x >= MEASURE_INTERVAL * 1000 ) {
     Serial.println("\nMidiendo variables...");
     measureTime = millis();
     
