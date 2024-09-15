@@ -79,6 +79,9 @@ String alert = "";
 float temp;
 // Valor de la medición de la humedad
 float humi;
+// Valor de la luminosidad
+int ldrValue = 0;
+int ldrPin = A0;
 
 /**
  * Conecta el dispositivo con el bróker MQTT usando
@@ -120,10 +123,11 @@ void mqtt_connect()
 /**
  * Publica la temperatura y humedad dadas al tópico configurado usando el cliente MQTT.
  */
-void sendSensorData(float temperatura, float humedad) {
+void sendSensorData(float temperatura, float humedad,float luminosidad) {
   String data = "{";
   data += "\"temperatura\": "+ String(temperatura, 1) +", ";
   data += "\"humedad\": "+ String(humedad, 1);
+  data += "\"luminosidad\": "+ String(luminosidad, 1);
   data += "}";
   char payload[data.length()+1];
   data.toCharArray(payload,data.length()+1);
@@ -165,12 +169,18 @@ float readHumedad() {
  * Verifica si las variables ingresadas son números válidos.
  * Si no son números válidos, se imprime un mensaje en consola.
  */
-bool checkMeasures(float t, float h) {
+bool checkMeasures(float t, float h, int l) {
   // Se comprueba si ha habido algún error en la lectura
     if (isnan(t) || isnan(h)) {
       Serial.println("Error obteniendo los datos del sensor DHT11");
       return false;
     }
+
+    if (isnan(l) ) {
+      Serial.println("Error obteniendo los datos del sensor de luminosidad");
+      return false;
+    }
+
     return true;
 }
 
@@ -419,13 +429,15 @@ void measure() {
     Serial.println("\nMidiendo variables...");
     measureTime = millis();
     
+    ldrValue = analogRead(ldrPin);
+
     temp = readTemperatura();
     humi = readHumedad();
 
     // Se chequea si los valores son correctos
-    if (checkMeasures(temp, humi)) {
+    if (checkMeasures(temp, humi,ldrValue)) {
       // Se envían los datos
-      sendSensorData(temp, humi); 
+      sendSensorData(temp, humi,ldrValue); 
     }
   }
 }
