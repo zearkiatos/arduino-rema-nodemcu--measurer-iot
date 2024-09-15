@@ -166,6 +166,21 @@ float readHumedad() {
 }
 
 /**
+ * Lee la luminosidad del sensor de la fotoresistencia, la imprime en consola y la devuelve.
+ */
+int readLuminosidad() {
+  
+  // Se lee la luminosidad
+  int l=analogRead(ldrPin);
+  
+  Serial.print("Luminosidad: ");
+  Serial.print(l);
+  Serial.println(" % ");
+  
+  return l;
+}
+
+/**
  * Verifica si las variables ingresadas son números válidos.
  * Si no son números válidos, se imprime un mensaje en consola.
  */
@@ -429,7 +444,7 @@ void measure() {
     Serial.println("\nMidiendo variables...");
     measureTime = millis();
     
-    ldrValue = analogRead(ldrPin);
+    ldrValue = readLuminosidad();
 
     temp = readTemperatura();
     humi = readHumedad();
